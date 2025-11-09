@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Demandes de Crédit - Bankati</title>
+    <link rel="stylesheet" th:href="@{/assets/css/home.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/credits.css}">
+</head>
+<body>
+<header class="navbar">
+    <div class="navbar-left">
+        <a th:href="@{/home}" class="home-link">
+            <img th:src="@{/assets/img/logo.png}" alt="Logo" class="logo">
+            <span class="app-name">Bankati</span>
+        </a>
+
+        <nav class="nav-links">
+            <a th:href="@{/admin/users}" class="nav-link"> 👥 Utilisateurs</a>
+            <a th:href="@{/credits}" class="nav-link">💳 Crédits</a>
+        </nav>
+    </div>
+
+    <div class="navbar-right">
+        <div class="session-dropdown" id="sessionDropdown">
+            <div class="session-toggle" id="sessionToggle">
+                👤 <span class="role" th:text="${session.user.role}">[ROLE]</span> :
+                <span class="name" th:text="${session.user.nom + ' ' + session.user.prenom}">[NOM PRENOM] ▼</span>
+            </div>
+            <div class="session-menu" id="sessionMenu">
+                <a th:href="@{/profil}" class="profil-button">
+                    <img th:src="@{/assets/img/admin.png}" alt="Profil" class="profile-icon">
+                    Mon profil
+                </a>
+                <a th:href="@{/logout}" class="logout-button">
+                    <img th:src="@{/assets/img/logout.png}" alt="Déconnexion" class="logout-icon">
+                    Déconnexion
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <h2>Demandes de Crédit</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th><th>Client</th><th>Montant</th><th>Durée</th><th>Mensualité</th><th>Statut</th><th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="c : ${credits}">
+        <td th:text="${c.id}">1</td>
+            <td th:text="${c.client.nom + ' ' + c.client.prenom}">Nom Prénom</td>
+            <td th:text="${c.capital}">10000</td>
+            <td th:text="${c.dureeMois}">12</td>
+            <td th:text="${c.mensualite}">850</td>
+            <td th:text="${c.statut}">EN_COURS</td>
+            <td>
+                <div th:if="${c.statut.toString() == 'EN_COURS'}">
+                    <a th:href="@{'/credits?action=approuver&id=' + ${c.id}}">✅</a>
+                    <a th:href="@{'/credits?action=rejeter&id=' + ${c.id}}">❌</a>
+                </div>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+<footer class="footer">
+    <span>© Bankati 2025 – Tous droits réservés</span>
+</footer>
+
+<script>
+    const dropdown = document.getElementById('sessionDropdown');
+    const menu = document.getElementById('sessionMenu');
+    let timeout;
+
+    dropdown.addEventListener('mouseenter', () => {
+        clearTimeout(timeout);
+        menu.classList.add('show');
+        menu.style.display = 'block';
+    });
+
+    dropdown.addEventListener('mouseleave', () => {
+        timeout = setTimeout(() => {
+            menu.classList.remove('show');
+            menu.style.display = 'none';
+        }, 300);
+    });
+</script>
+</body>
+</html>

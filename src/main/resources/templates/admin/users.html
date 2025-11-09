@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Utilisateurs - Bankati</title>
+    <link rel="stylesheet" th:href="@{/assets/css/home.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/users.css}">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="navbar-left">
+        <a th:href="@{/home}" class="home-link">
+            <img th:src="@{/assets/img/logo.png}" alt="Logo" class="logo">
+            <span class="app-name">Bankati</span>
+        </a>
+        <nav class="nav-links">
+            <a th:href="@{/admin/users}" class="nav-link"> 👥 Utilisateurs</a>
+            <a th:href="@{/credits}" class="nav-link">💳 Crédits</a>
+        </nav>
+    </div>
+
+    <div class="navbar-right">
+        <div class="session-dropdown" id="sessionDropdown">
+            <div class="session-toggle" id="sessionToggle">
+                👤 <span class="role" th:text="${session.user.role}">ROLE</span> :
+                <span class="name" th:text="${session.user.nom + ' ' + session.user.prenom}">Nom Prénom ▼</span>
+            </div>
+            <div class="session-menu" id="sessionMenu">
+                <a th:href="@{/profil}" class="profil-button">
+                    <img th:src="@{/assets/img/admin.png}" alt="Profil" class="profile-icon">
+                    Mon profil
+                </a>
+                <a th:href="@{/logout}" class="logout-button">
+                    <img th:src="@{/assets/img/logout.png}" alt="Déconnexion" class="logout-icon">
+                    Déconnexion
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <h2>Liste des Utilisateurs</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Username</th>
+            <th>Rôle</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="u : ${users}">
+            <td th:text="${u.nom}">Nom</td>
+            <td th:text="${u.prenom}">Prénom</td>
+            <td th:text="${u.username}">Username</td>
+            <td th:text="${u.role}">Rôle</td>
+            <td>
+                <a th:href="@{'/admin/users/edit?id=' + ${u.id}}" title="Modifier">✏️</a>
+                <a th:href="@{'/admin/users/delete?id=' + ${u.id}}" onclick="return confirm('Supprimer cet utilisateur ?')" title="Supprimer">🗑️</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3 style="text-align:center; color:#006b7c;" th:text="${editUser != null} ? 'Modifier un utilisateur' : 'Ajouter un nouvel utilisateur'">
+        Ajouter un nouvel utilisateur
+    </h3>
+
+    <div style="text-align:center; margin-bottom: 10px;" th:if="${editUser != null}">
+        <a th:href="@{/admin/users}"
+           style="text-decoration: none; padding: 10px 20px;
+                  border: 2px solid #006b7c; border-radius: 10px;
+                  font-weight: bold; color: #006b7c; display: inline-block;">
+            ➕ Ajouter un nouvel utilisateur
+        </a>
+    </div>
+
+    <form th:action="@{/admin/users/save}" method="post">
+        <!-- ✅ ID toujours présent -->
+        <input type="hidden" name="id" th:value="${editUser != null} ? ${editUser.id} : ''" />
+
+        <input type="text" name="nom" placeholder="Nom" th:value="${editUser != null} ? ${editUser.nom} : ''" required />
+        <input type="text" name="prenom" placeholder="Prénom" th:value="${editUser != null} ? ${editUser.prenom} : ''" required />
+        <input type="text" name="username" placeholder="Nom d'utilisateur" th:value="${editUser != null} ? ${editUser.username} : ''" required />
+        <input type="password" name="password" placeholder="Mot de passe" th:value="${editUser != null} ? ${editUser.password} : ''" required />
+
+        <select name="role" required>
+            <option value="" disabled th:if="${editUser == null}" selected>-- Sélectionner un rôle --</option>
+            <option th:each="r : ${roles}"
+                    th:value="${r}"
+                    th:text="${r}"
+                    th:selected="${editUser != null and editUser.role == r}">
+            </option>
+        </select>
+
+        <button type="submit">💾 Enregistrer</button>
+    </form>
+
+</main>
+
+<footer class="footer">
+    <span>© Bankati 2025 – Tous droits réservés</span>
+</footer>
+
+<script>
+    const dropdown = document.getElementById('sessionDropdown');
+    const menu = document.getElementById('sessionMenu');
+    let timeout;
+
+    dropdown.addEventListener('mouseenter', () => {
+        clearTimeout(timeout);
+        menu.classList.add('show');
+        menu.style.display = 'block';
+    });
+
+    dropdown.addEventListener('mouseleave', () => {
+        timeout = setTimeout(() => {
+            menu.classList.remove('show');
+            menu.style.display = 'none';
+        }, 300);
+    });
+</script>
+</body>
+</html>

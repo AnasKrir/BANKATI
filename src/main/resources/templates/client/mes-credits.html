@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mes Crédits</title>
+    <link rel="stylesheet" th:href="@{/assets/css/table.css}">
+</head>
+<body>
+<div class="main-content">
+    <h2 style="color:#006b7c;">📋 Mes Demandes de Crédit</h2>
+
+    <table style="width: 90%; margin:auto; border-collapse: collapse;">
+        <thead style="background-color: #cee9e9;">
+        <tr>
+            <th>ID</th>
+            <th>Montant</th>
+            <th>Durée</th>
+            <th>Mensualité</th>
+            <th>Statut</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="c : ${credits}" style="text-align:center;">
+            <td th:text="${c.id}">1</td>
+            <td th:text="${#numbers.formatDecimal(c.capital, 1, 'COMMA', 2, 'POINT')} + ' DH'">0.00 DH</td>
+            <td th:text="${c.dureeMois + ' mois'}">12 mois</td>
+            <td>
+                <span th:if="${c.mensualite != null}"
+                      th:text="${#numbers.formatDecimal(c.mensualite, 1, 'COMMA', 2, 'POINT')}">0.00</span>
+                <span th:unless="${c.mensualite != null}">-</span>
+            </td>
+            <td th:text="${c.statut}">EN_COURS</td>
+            <td th:text="${c.dateDemande}">2025-05-25</td>
+            <td>
+                <div th:if="${c.statut.toString() == 'EN_COURS'}">
+                    <form th:action="@{/credits/supprimer}" method="post">
+                        <input type="hidden" name="id" th:value="${c.id}">
+                        <button type="submit"
+                                style="background-color:#e53935; color:white; border:none; padding:5px 10px; border-radius:5px;">
+                            Supprimer
+                        </button>
+                    </form>
+                </div>
+
+                <div th:unless="${c.statut.toString() == 'EN_COURS'}">—</div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <a th:href="@{/home}" style="text-decoration:none; color:#006b7c;">← Retour</a>
+    </div>
+</div>
+</body>
+</html>

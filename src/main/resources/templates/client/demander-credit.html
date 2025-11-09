@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvelle Demande de Crédit</title>
+    <link rel="stylesheet" th:href="@{/assets/css/form.css}">
+</head>
+<body>
+<div class="form-container">
+    <h2>➕ Nouvelle Demande de Crédit</h2>
+
+    <form th:action="@{/credits/demande}" th:object="${credit}" method="post">
+        <label>Montant :</label>
+        <input type="number" step="1000" th:field="*{capital}" required>
+
+        <label>Durée (mois) :</label>
+        <input type="number" th:field="*{dureeMois}" required>
+
+        <label>Taux mensuel (%) :</label>
+        <input type="number" step="0.01" th:field="*{tauxMensuel}" required>
+
+        <button type="submit">Soumettre la demande</button>
+        <a th:href="@{/home}">← Retour</a>
+    </form>
+</div>
+</body>
+</html>

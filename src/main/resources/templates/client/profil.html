@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Profil Client</title>
+    <link rel="stylesheet" th:href="@{/assets/css/profil.css}">
+</head>
+<body>
+<div class="profile-container">
+    <img th:src="@{/assets/img/client.png}" alt="Profil" class="profile-icon">
+    <h2>Mon Profil Client</h2>
+
+    <div class="info-line">
+        <span class="label">Nom :</span>
+        <span th:text="${session.user.nom}">Nom</span>
+    </div>
+    <div class="info-line">
+        <span class="label">Prénom :</span>
+        <span th:text="${session.user.prenom}">Prénom</span>
+    </div>
+    <div class="info-line">
+        <span class="label">Username :</span>
+        <span th:text="${session.user.username}">Username</span>
+    </div>
+    <div class="info-line">
+        <span class="label">Rôle :</span>
+        <span th:text="${session.user.role}">Role</span>
+    </div>
+
+    <a th:href="@{/home}" class="back-link">← Retour à l'accueil</a>
+</div>
+</body>
+</html>

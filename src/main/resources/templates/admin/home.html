@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil Admin - Bankati</title>
+    <link rel="stylesheet" th:href="@{/assets/css/home.css}">
+</head>
+<body>
+<header class="navbar">
+    <div class="navbar-left">
+        <a th:href="@{/home}" class="home-link">
+            <img th:src="@{/assets/img/logo.png}" alt="Logo" class="logo">
+            <span class="app-name">Bankati</span>
+        </a>
+
+        <nav class="nav-links">
+            <a th:href="@{/admin/users}" class="nav-link"> 👥 Utilisateurs</a>
+            <a th:href="@{/credits}" class="nav-link"> 💳 Crédits</a>
+        </nav>
+    </div>
+
+    <div class="navbar-right">
+        <div class="session-dropdown" id="sessionDropdown">
+            <div class="session-toggle" id="sessionToggle">
+                👤 <span class="role" th:text="${session.user.role}">[ROLE]</span> :
+                <span class="name" th:text="${session.user.nom + ' ' + session.user.prenom}">[NOM PRENOM] ▼</span>
+            </div>
+            <div class="session-menu" id="sessionMenu">
+                <a th:href="@{/profil}" class="profil-button">
+                    <img th:src="@{/assets/img/admin.png}" alt="Profil" class="profile-icon">
+                    Mon profil
+                </a>
+                <a th:href="@{/logout}" class="logout-button">
+                    <img th:src="@{/assets/img/logout.png}" alt="Déconnexion" class="logout-icon">
+                    Déconnexion
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="main-content" style="flex-direction: column; gap: 30px; padding: 20px;">
+    <h2 style="text-align:center; color:#006b7c;">Tableau de Bord Administrateur</h2>
+    <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px;">
+        <div class="welcome-box" style="background-color: #2196F3;">
+            Total Clients <h3 th:text="${totalClients}">0</h3>
+        </div>
+        <div class="welcome-box" style="background-color: #FF9800;">
+            Demandes de Crédit <h3 th:text="${totalDemandes}">0</h3>
+        </div>
+        <div class="welcome-box" style="background-color: #4CAF50;">
+            Crédits Approuvés <h3 th:text="${creditsApprouves}">0</h3>
+        </div>
+        <div class="welcome-box" style="background-color: #F44336;">
+            Crédits Rejetés <h3 th:text="${creditsRejetes}">0</h3>
+        </div>
+    </div>
+
+    <div style="text-align:center;">
+        <h3>Montant Total des Crédits Approuvés</h3>
+        <p style="font-size: 24px; color: green;">
+            <span th:if="${montantTotal != null}" th:text="${#numbers.formatDecimal(montantTotal, 1, 'COMMA', 2, 'POINT')} + ' DH'">0.00 DH</span>
+            <span th:unless="${montantTotal != null}">0.00 DH</span>
+        </p>
+    </div>
+
+    <div style="width: 90%; margin: auto;">
+        <h3>Dernières Demandes de Crédit</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead style="background-color: #cee9e9;">
+            <tr>
+                <th>ID</th><th>Client</th><th>Montant</th><th>Durée (mois)</th><th>Statut</th><th>Date de Demande</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${allCredits}" style="text-align:center;">
+                <td style="border: 1px solid #ccc; padding: 8px;" th:text="${c.id}">1</td>
+                <td style="border: 1px solid #ccc; padding: 8px;" th:text="${c.client.nom + ' ' + c.client.prenom}">Nom Prénom</td>
+                <td style="border: 1px solid #ccc; padding: 8px;">
+                    <span th:if="${c.capital != null}" th:text="${#numbers.formatDecimal(c.capital, 1, 'COMMA', 2, 'POINT')} + ' DH'">0.00 DH</span>
+                    <span th:unless="${c.capital != null}">0.00 DH</span>
+                </td>
+                <td style="border: 1px solid #ccc; padding: 8px;" th:text="${c.dureeMois}">12</td>
+                <td style="border: 1px solid #ccc; padding: 8px;" th:text="${c.statut}">EN_COURS</td>
+                <td style="border: 1px solid #ccc; padding: 8px;" th:text="${c.dateDemande}">2025-05-25</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer class="footer">
+    <span>© Bankati 2025 – Tous droits réservés</span>
+</footer>
+
+<script>
+    const dropdown = document.getElementById('sessionDropdown');
+    const menu = document.getElementById('sessionMenu');
+    let timeout;
+
+    dropdown.addEventListener('mouseenter', () => {
+        clearTimeout(timeout);
+        menu.classList.add('show');
+        menu.style.display = 'block';
+    });
+
+    dropdown.addEventListener('mouseleave', () => {
+        timeout = setTimeout(() => {
+            menu.classList.remove('show');
+            menu.style.display = 'none';
+        }, 300);
+    });
+</script>
+</body>
+</html>
